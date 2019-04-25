@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Krista L. DeStasio</title>
+    <link>/</link>
+    <description>Recent content on Krista L. DeStasio</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 17 Apr 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>About</title>
+      <link>/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/about/</guid>
+      <description>General I am a doctoral student researcher and National Science Foundation Graduate Research Fellow in the Social and Affective Neuroscience Lab at the University of Oregon (UO). I am affiliated with the UO Center for Translational (Neuro)Science, an organization focused on translating basic psychological and physiological science into actionable programs of research that have the potential to positively impact the surrounding community.
+Prior to my graduate studies, I was a full-time project coordinator on an NIH-funded study investigating the feasibility of reversing deficits in inhibitory control associated with early life adversity; a collaboration between Drs.</description>
+    </item>
+    
+    <item>
+      <title>CV</title>
+      <link>/cv/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/cv/</guid>
+      <description>Krista L. DeStasio, M.S. E-mail: kdestasi@uoregon.edu
+GitHub: https://github.com/kdestasio
+EDUCATION DOCTORAL STUDENT, 2016 - PRESENT
+UNIVERSITY OF OREGON (EUGENE, OR)
+Advisor: Dr. Elliot Berkman
+M.S. PSYCHOLOGY, 2018
+UNIVERSITY OF OREGON (Eugene, OR)
+Master’s Thesis Advisor: Dr. Elliot Berkman
+B.S. PSYCHOLOGY, MINOR IN PHILOSOPHY
+YORK COLLEGE OF PENNSYLVANIA (YORK, PA)
+Honors in Psychology, Graduated Suma Cum Laude
+PUBLICATIONS DeStasio, Krista L., Clithero, John A., and Berkman, Elliot T. (under review) Neuroeconomics, Health Psychology, and the Interdisciplinary Study of Preventative Health Behavior.</description>
+    </item>
+    
+    <item>
+      <title>R Best Practices</title>
+      <link>/post/r_best_practices/</link>
+      <pubDate>Wed, 17 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/r_best_practices/</guid>
+      <description>When learning to write code for research projects, it can be overwhelming to figure out how to set-up a project and the novice programmer may not yet have the experience necessary to forsee potential pitfalls of a given, seemingly inconsequential decision. This post provides a discussion of best practices1 for developing code-based projects and for writing R code in a research setting with an eye toward proactively avoiding common pitfalls.</description>
+    </item>
+    
+  </channel>
+</rss>

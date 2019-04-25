@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author"      content="Sergey Pozhilov (GetTemplate.com)">
+
+	<title>R Best Practices</title>
+
+	<link rel="shortcut icon" href="../../images/gt_favicon.png">
+
+	
+	<link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.no-icons.min.css" rel="stylesheet">
+	
+	<link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+	
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alice|Open+Sans:400,300,700">
+	
+	<link rel="stylesheet" href="../../css/styles.css">
+
+	
+
+    
+
+</head>
+<body class="home">
+
+<header id="header">
+	<div id="head" >
+		<h1 id="logo" class="text-center">
+			<img class="img-circle" src="../../images/krista.jpg" alt="">
+			<span class="title">Krista L. DeStasio, M.S.</span>
+			<span class="tagline"><a href="https://sanlab.uoregon.edu/">Social &amp; Affective Neuroscience Lab<br>
+			<span class="tagline"><a href="http://ctn.uoregon.edu/">Center for Translational (Neuro)Science<br>
+				<br><a href="mailto:kdestasi@uoregon.edu">kdestasi@uoregon.edu</a>
+            </span>
+		</h1>
+	</div>
+
+    <nav class="navbar navbar-default navbar-sticky">
+    <div class="container-fluid">
+
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="true">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+
+        <div class="navbar-collapse collapse" id="bs-example-navbar-collapse-1">
+
+             <ul class="nav navbar-nav">
+                
+                <li>
+                    <a href="../../">home</a>
+                </li>
+                
+                <li>
+                    <a href="../../post/">blog</a>
+                </li>
+                
+                <li>
+                    <a href="../../about/">About</a>
+                </li>
+                
+                <li>
+                    <a href="../../cv/">CV</a>
+                </li>
+                
+            
+
+        </div>
+    </div>
+</nav>
+<nav class="navbar navbar-fake"></nav>
+
+
+</header>
+
+
+<main id="main">
+
+	<div class="container">
+
+		<div class="row topspace">
+			<div class="col-sm-8 col-sm-offset-2">
+
+ 				<article class="post">
+					<header class="entry-header">
+ 						<div class="entry-meta">
+ 							<span class="posted-on"><time class="entry-date published" date="2019-04-17 00:00:00 &#43;0000 UTC">April 17, 2019</time></span>
+ 						</div>
+ 						<h1 class="entry-title"><a href="../../post/r_best_practices/" rel="bookmark">R Best Practices</a></h1>
+					</header>
+					<div class="entry-content">
+						
+
+
+<p>When learning to write code for research projects, it can be overwhelming to figure out how to set-up a project and the novice programmer may not yet have the experience necessary to forsee potential pitfalls of a given, seemingly inconsequential decision. <strong>This post provides a discussion of best practices<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> for developing code-based projects and for writing <code>R</code> code in a research setting with an eye toward proactively avoiding common pitfalls.</strong> While reading, it is worth keeping in mind that what works for a certain project or with different collaborators will likely vary, but a consistent and well thought out approach to designing project structures and writing code provides a strong base from which to develop subsequent projects.</p>
+<div id="project-organization" class="section level1">
+<h1>1 Project organization</h1>
+<div id="keep-files-in-a-project-folder" class="section level2">
+<h2>1.1 Keep files in a project folder</h2>
+<p>It is good practice to keep all files for a given project in the same project-specific folder. You can then create sub-folders for specific types of files, such as data, figures, function files, and manuscripts. Using a consistent folder structure and file naming system across projects makes it easier to:</p>
+<ul>
+<li>Navigate the project contents.<br />
+</li>
+<li>Resume work after a hiatus.<br />
+</li>
+<li>Re-use code in multiple projects.</li>
+</ul>
+<p>Here is an example of a basic project layout:</p>
+<pre><code>project  
+    ├── data  
+    ├── doc  
+    ├── figs  
+    ├── output  
+    └── src  </code></pre>
+<div id="folder-contents" class="section level3 tabset tabset-fade tabset-pills">
+<h3>1.1.1 Folder contents</h3>
+<div id="project" class="section level4">
+<h4>project</h4>
+<p><code>project</code> is the top-level folder and contains all of the folders and files associated with that project. This folder should be renamed for each unique project in a way that indicates what it is (e.g. <code>discounting_study</code>).</p>
+</div>
+<div id="data" class="section level4">
+<h4>data</h4>
+<p><code>data</code> contains the raw data files used in the project. These files should not be altered and are ideally read-only.</p>
+</div>
+<div id="doc" class="section level4">
+<h4>doc</h4>
+<p><code>doc</code> contains any manuscripts or interim summaries produced with the project.</p>
+</div>
+<div id="figs" class="section level4">
+<h4>figs</h4>
+<p><code>figs</code> contains any plots, images, tables, or figures <em>created and saved by your code</em>. It should be possible to delete and regenerate this folder with the scripts in the project folder.</p>
+</div>
+<div id="output" class="section level4">
+<h4>output</h4>
+<p><code>output</code> contains non-figure objects created by the scripts. For example, processed data or logs.</p>
+</div>
+<div id="src" class="section level4">
+<h4>src</h4>
+<p><code>src</code> is an optional folder for any files you may want to <code>source()</code> in your scripts. This is not code that is run. For example, simple <code>.R</code> files containing functions.</p>
+</div>
+</div>
+<div id="see-also" class="section level3">
+<h3>See also</h3>
+<ul>
+<li><a href="https://nicercode.github.io/blog/2013-04-05-projects/"><em>Designing Projects</em></a>, by Rich Fitzjohn, for more on directory layouts and projects in RStudio.<br />
+</li>
+<li><p><a href="https://www.carlboettiger.info/2012/05/06/research-workflow.html"><em>Research Workflow</em></a>, by the Boettiger Group, for an approach to organizing workflows based on R Package guidelines.</p></li>
+<li><p><a href="https://www.r-bloggers.com/structuring-r-projects/">R-bloggers post: <em>Structuring R projects</em></a></p></li>
+</ul>
+</div>
+</div>
+<div id="give-files-meaningful-names" class="section level2">
+<h2>1.2 Give files meaningful names</h2>
+<p>Each file should have a short, descriptive name that indicates its purpose. Names should include only letters and numbers with dashes<code>-</code> or underscores <code>_</code> to separate words. Files that are part of the same work flow should be numbered to indicate the order in which they are to be run. For example:</p>
+<ul>
+<li><code>0_get_data.R</code><br />
+</li>
+<li><code>1_preprocess_data.R</code><br />
+</li>
+<li><code>2_plot_data.R</code><br />
+</li>
+<li><code>3_lm_models.R</code></li>
+</ul>
+</div>
+<div id="use-modular-scripts" class="section level2">
+<h2>1.3 Use modular scripts</h2>
+<p>Writing short, modular scripts helps prevent an analysis script from becoming too verbose. This makes it easier to figure out what the script is doing and to troubleshoot when something goes wrong. These scripts can then be run individually, or written as functions and incorporated into a primary analysis script using <code>source()</code>.</p>
+</div>
+<div id="use-rstudio-projects" class="section level2">
+<h2>1.4 Use RStudio projects</h2>
+<p>While not essential for a good workflow, RStudio Projects are an easy way to keep everything you need for your analysis together and make it easier to create reproducible and shareable projects (more on reproducibility later). An RStudio project should be created at the top level of a project directory (the <code>project</code> folder in the above example).</p>
+<div id="see-also-1" class="section level3">
+<h3>See also</h3>
+<ul>
+<li><a href="https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects">RStudio’s page on RStudio Projects</a></li>
+<li><a href="https://r4ds.had.co.nz/workflow-projects.html">Chapter 8, <em>Workflow:projects</em></a> of Hadley Wickham’s <em>R for Data Science</em> book.</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="code-organization" class="section level1">
+<h1>2 Code organization</h1>
+<p>Organizing the code within a file makes it more readable and navigable, for yourself and others.</p>
+<div id="describe-your-code" class="section level2">
+<h2>2.2 Describe your code</h2>
+<p>Every file should start with a brief description of what it does. This can be in the form of a comment block in a simple <code>.R</code> script, or text in an R Markdown (<code>.Rmd</code>) file.</p>
+<p><strong>Example:</strong></p>
+<pre><code># This script reads in raw data from the cities_data.csv file and runs our lab&#39;s 
+# standard preprocessing stream on the data. A preprocessed data frame is generated 
+# and saved as cities_ppc.Rda</code></pre>
+</div>
+<div id="top-heavy-set-up" class="section level2">
+<h2>2.3 Top-heavy set-up</h2>
+<p>Put the following components at the top of a script:</p>
+<ul>
+<li><code>library()</code></li>
+<li>Hard-coded lines</li>
+<li><code>source()</code></li>
+</ul>
+<p>Including these components at the top of a script makes the run requirements more transparent. Loading packages and functions at the top of a script makes it clear what is required for the analysis. Similarly, including hard-coded content at the top of the script makes it clear what someone else running your code will have to change for it to work.</p>
+<p><strong>Example:</strong></p>
+<pre><code># Load the required packages
+list_of_packages &lt;- c(&quot;janitor&quot;, &quot;here&quot;)
+lapply(list_of_packages, library, character.only = TRUE)
+
+# Source functions
+source(file = here(&quot;myfunctions.R&quot;))
+
+# Set hard-coded variables
+path_datafile &lt;- here(&#39;data/data_file.csv&#39;)</code></pre>
+</div>
+</div>
+<div id="the-code-itself" class="section level1">
+<h1>3 The code itself</h1>
+<div id="comment-your-code" class="section level2">
+<h2>3.1 Comment your code</h2>
+<p>Incessantly. Even more than you do now. Comments should note analysis decisions, summarize results or steps, and break-up sections of code that do different things. If you have lots of comments or if you will be sharing your code with collaborators, it is worth considering R Markdown.</p>
+</div>
+<div id="r-markdown" class="section level2">
+<h2>3.2 R Markdown</h2>
+<p>R Markdown allows analyses to be run and displayed in an easily readible document (HTML, PDF, WORD). This is especially useful when working with collaborators, to document complicated or long analyses, when you want to generate a summary report for yourself, or when you want an easier to read output of your analysis. There are many useful online resources for information on formatting R Markdown documents.</p>
+</div>
+<div id="name-your-chunks" class="section level2">
+<h2>3.3 Name your chunks</h2>
+<p>When using R Markdown, name your chunks of code for easy navigation using the handy, built-in table of contents at the bottom left of your RStudio editor window.</p>
+<p><strong>Example</strong></p>
+<div class="figure">
+<img src="../../images/name_chunks.png" style="width:40.0%" />
+
+</div>
+<div id="see-also-2" class="section level3">
+<h3>See also</h3>
+<ul>
+<li><a href="https://bookdown.org/yihui/rmarkdown/"><em>R Markdown: The Definitive Guide</em></a>, by Yihui Xie, J. J. Allaire, and Garrett Grolemund, for everything you’ve ever wanted to know about R Markdown.<br />
+</li>
+<li><a href="https://cfss.uchicago.edu/notes/r-markdown/"><em>A dive into R Markdown</em></a>, course content from Benjamin Soltoff.<br />
+</li>
+<li><a href="https://holtzy.github.io/Pimp-my-rmd/#text_formating"><em>Pimp my RMD: a few tips for R Markdown</em></a>, by Yan Holtz, for some quick R Markdown formatting tips.<br />
+</li>
+<li><a href="https://www.rstudio.com/wp-content/uploads/2016/03/rmarkdown-cheatsheet-2.0.pdf">the R Markdown Cheatsheet</a></li>
+</ul>
+</div>
+</div>
+<div id="develop-a-style" class="section level2">
+<h2>3.4 Develop a Style</h2>
+<p>Hadley Wickham has written <a href="https://style.tidyverse.org/">an entire book</a> on coding style. I suggest following his guidelines for developing a coding style if you don’t have one already (and maybe even if you do), but the most important thing about whatever style you use is that it be <strong>consistent</strong>. This includes consistency in:</p>
+<pre><code>- Naming things (variables, functions)  
+- Organization across and within files  
+- Appearance (indentation, spacing)  
+- Commenting  </code></pre>
+</div>
+</div>
+<div id="reproducibility" class="section level1">
+<h1>4 Reproducibility</h1>
+<p>Writing code that will produce the same results across time, host machines, and people running the code is self-evidently important. Here are some ways to improve the reproducibility of scripts.</p>
+<div id="use-flexible-coding" class="section level2">
+<h2>4.1 Use flexible coding</h2>
+<p>Using flexible coding helps prevent unintended consequences when something is changed upstream and <a href="http://adv-r.had.co.nz/Functional-programming.html">decreases the likelihood of mistakes</a>.</p>
+</div>
+<div id="avoid-setwd-and-rmlist-ls" class="section level2">
+<h2>4.2 Avoid <code>setwd()</code> and <code>rm(list = ls())</code></h2>
+<p>There is an <a href="https://www.tidyverse.org/articles/2017/12/workflow-vs-script/">entire post</a> by Jenny Bryan on why <code>setwd()</code> and <code>rm(list = ls())</code> should be avoided.</p>
+<p>Briefly, <code>setwd()</code> relies on a hard coded path that must be changed if anyone else uses the code or if the file is moved on the host machine. A better alternative is to use the <a href="https://malco.io/2018/11/05/why-should-i-use-the-here-package/"><code>here</code> package</a>, which is flexible across machines and does not require other users to change the path if they are running the script from the same project directory. This is why <code>here()</code> works particularly well with R Projects, which retain the structure and content of projects across directories or machines.</p>
+<p>Many people use <code>rm(list = ls())</code> to clean their environment at the start of a script. However, <code>rm(list = ls())</code> does not create a new R session, which means that there may still be hidden dependencies (libraries, functions) that the author of the code is unaware of but that will prevent the code from running for a different user.</p>
+</div>
+<div id="dont-save-your-workspace" class="section level2">
+<h2>4.3 Don’t save your workspace</h2>
+<p>It is a good idea to start every work session with a clean environment so you know what packages or dependencies the code requires. Toward that end, don’t save your workspace.</p>
+<pre><code>- Go to RStudio &gt; Preferences...
+- Uncheck the box for &quot;Restore .RData into workspace at setup&quot;.  
+- Set &quot;Save workspace to .RData on exit&quot; to &quot;Never&quot;.  </code></pre>
+</div>
+<div id="use-library-not-require" class="section level2">
+<h2>4.4 Use <code>library()</code> not <code>require()</code></h2>
+<p>Using <code>require()</code> silences warnings that may be necessary for the user to properly implement certain functions. See Yihui Xie’s <a href="https://yihui.name/en/2014/07/library-vs-require/">blog post</a> for a full discussion.</p>
+</div>
+<div id="use-version-control" class="section level2">
+<h2>4.5 Use version control</h2>
+<p><a href="https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control">Version control</a> is a means of recording changes between different versions of a file over time. It provides the ability to “roll-back” changes and recall an earlier version of a file. <a href="http://https://guides.github.com/introduction/git-handbook/">Git</a> and <a href="https://lab.github.com/githubtraining/introduction-to-github">Github</a> are a particularly useful means of version control as RStudio has a <a href="http://r-pkgs.had.co.nz/git.html">Git integration</a> that makes version control a bit easier for those who are new to it or who less comfortable using the command line. This <a href="https://happygitwithr.com/">book</a> by Jenny Bryan is a wonderful resource for getting started.</p>
+<div id="see-also-3" class="section level3">
+<h3>See also</h3>
+<ul>
+<li><a href="https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control#_getting_started"><em>Getting Started - About Version Control</em></a>, a step-by-step guide<br />
+</li>
+<li>A more in-depth account with <a href="https://git-scm.com/book/en/v2"><em>The Git Book</em></a></li>
+</ul>
+</div>
+</div>
+<div id="track-package-versions" class="section level2">
+<h2>4.6 Track package versions</h2>
+<p>It is a good idea to track package versions used in your code. That way, if anything changes in the package, you will know what version is needed to make your code work. There are a few different ways to track package versions in R Projects. One is <a href="http://rstudio.github.io/packrat/">{packrat}</a>, which when it works provides a snapshot of all your package versions for a project. However, it is difficult to use and can be buggy. Another option still earlyi in development is <a href="https://github.com/rstudio/renv">{renv}</a>, which like {packrat} uses private package libraries to track package versions. {renv} is by developed by RStudio and is therefore likely to provide code base with ongoing maintainence. The third and likely most robust means of version controlling your packages and code environment is <a href="https://ropenscilabs.github.io/drake-manual/index.html">{drake}</a>, which creates a reproducible build system stable across systems and time. While {drake} is probably the best option in terms of reproducibility, it requires a genuine commitment to get up and running that is not for the faint of heart.</p>
+</div>
+</div>
+<div id="use-functions" class="section level1">
+<h1>5 Use functions</h1>
+<p>If you’re copy pasting code with few changes, write a function instead. <a href="https://nicercode.github.io/guides/functions/">Nice R Code</a> has a good introduction to writing functions for those new to the idea. For a more in-depth introduction to functions, see Hadley Wickham’s chapters on functional programming in the <a href="https://r4ds.had.co.nz/functions.html">R for Data Science</a> book, or see a more in depth discussin in his <a href="https://adv-r.hadley.nz/functionals.html">Advanced R</a> book. It is generally better to <a href="https://nicercode.github.io/guides/repeating-things/">choose vectorization over loops</a> as functions require less text and can run more quickly.</p>
+<p>When writing functions:</p>
+<ul>
+<li>Write simple functions that do only one thing.<br />
+</li>
+<li>Create files of related or single functions.<br />
+</li>
+<li>Document them well.</li>
+</ul>
+</div>
+<div id="additional-resources" class="section level1">
+<h1>Additional resources</h1>
+<ul>
+<li><a href="https://adv-r.hadley.nz/">Advanced R</a>, by Hadley Wickham</li>
+<li><a href="https://style.tidyverse.org/">The tidyverse style guide</a>, by Hadley Wickham<br />
+</li>
+<li><a href="https://r4ds.had.co.nz/">R for Data Science</a>, by Hadley Wickham<br />
+</li>
+<li><a href="https://www.r-bloggers.com/r-code-best-practices/">R Code – Best practices</a></li>
+<li><a href="https://owi.usgs.gov/blog/intro-best-practices/">U.S. Geological Survey blog post: Beyond Basic R</a></li>
+<li><a href="https://swcarpentry.github.io/r-novice-inflammation/">Software Carpentry: Programming with R</a></li>
+<li><a href="https://whattheyforgot.org/project-oriented-workflow.html">What They Forgot to Teach You About R</a>, by Jennifer Bryan and Jim Hester</li>
+<li><a href="https://www.rstudio.com/online-learning/">RStudio Online Learning Website</a></li>
+<li><a href="https://happygitwithr.com/">Happy Git and GitHub for UseR</a>, by Jenny Bryan</li>
+</ul>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>The best practices discussed here are based on personal experience and the resources referenced in the post. They are not hard rules, nor are they immutable. There is a degree of personal preference inherent in the guidelines and my thoughts on these practices will likely continue to evolve with time and experience.<a href="#fnref1">↩</a></p></li>
+</ol>
+</div>
+
+					</div>
+				</article>
+
+			</div>
+		</div> 
+
+        <div class="row">
+			<div class="col-sm-8 col-sm-offset-2">
+
+				<div id="share">
+                    
+				</div>
+			</div>
+		</div> 
+		<div class="clearfix"></div>
+
+		<div class="row">
+			<div class="col-sm-8 col-sm-offset-2">
+
+				<div id="comments">
+                    
+				</div>
+			</div>
+		</div> 
+		<div class="clearfix"></div>
+
+	</div>	
+
+</main>
+
+<footer id="footer">
+	<div class="container">
+		<div class="row">
+			
+			<div class="col-md-3 widget">
+				<h3 class="widget-title">Contact</h3>
+				<div class="widget-body">
+					<p>
+					<a href="mailto:kdestasi@uoregon.edu">kdestasi@uoregon.edu</a><br>
+						<br>
+						University of Oregon
+					</p>
+				</div>
+			</div>
+			
+
+			
+			<div class="col-md-3 widget">
+				<h3 class="widget-title">Follow me</h3>
+				<div class="widget-body">
+					<p class="follow-me-icons">
+                        
+                            
+                        
+                            
+                                <a href="https://twitter.com/psychneurd" target="_blank"><i class="fa fa-twitter-square fa-2"></i></a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                                <a href="https://www.linkedin.com/in/krista-destasio" target="_blank"><i class="fa fa-linkedin-square fa-2"></i></a>
+                            
+                        
+                            
+                        
+                            
+                                <a href="https://github.com/kdestasio" target="_blank"><i class="fa fa-github fa-2"></i></a>
+                            
+                        
+                            
+                                <a href="mailto:kdestasi@uoregon.edu" target="_blank"><i class="fa fa-envelope fa-2"></i></a>
+                            
+                        
+					</p>
+				</div>
+			</div>
+			
+
+			
+
+			
+
+		</div> 
+	</div>
+</footer>
+
+<footer id="underfooter">
+	<div class="container">
+		<div class="row">
+
+			<div class="col-md-6 widget">
+				<div class="widget-body">
+					<p>University of Oregon</p>
+				</div>
+			</div>
+
+			<div class="col-md-6 widget">
+				<div class="widget-body">
+					<p class="text-right">
+						Copyright &copy; 2019, Krista L. DeStasio, M.S.<br>
+						Design: <a href="http://www.gettemplate.com" rel="designer">Initio by GetTemplate</a> - 
+                        Powered by: <a href="https://gohugo.io/" rel="poweredby">Hugo</a>
+                    </p>
+				</div>
+			</div>
+
+		</div> 
+	</div>
+</footer>
+
+
+
+
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="../../js/template.js"></script>
+<script id="dsq-count-scr" src="//hugo-initio-site.disqus.com/count.js" async></script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', '', 'auto');
+  ga('send', 'pageview');
+</script>
+
+</body>
+</html>
+
