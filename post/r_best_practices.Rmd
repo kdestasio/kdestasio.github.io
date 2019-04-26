@@ -33,13 +33,19 @@ Here is an example of a basic project layout:
 
 ```
 project  
+    ├── 0_get_data.R
+    ├── 1_preprocess_data.R
+    ├── README.txt
     ├── data  
     ├── doc  
     ├── figs  
     ├── output  
     └── src  
-```    
-### 1.1.1 Folder contents{.tabset .tabset-fade .tabset-pills}
+```   
+
+Code files are stored in the top level of the `project` directory (e.g. `0_get_data.R` and `1_preprocess_data.R`). Also stored in the top level directory is a `README.txt` file that contains a description of the project and a brief summary of for each file and folder in the project.  
+
+### 1.1.1 Folder sub-directories{.tabset .tabset-fade .tabset-pills}
 #### project
 `project` is the top-level folder and contains all of the folders and files associated with that project. This folder should be renamed for each unique project in a way that indicates what it is (e.g. `discounting_study`).  
 

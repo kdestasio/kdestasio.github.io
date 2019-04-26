@@ -114,13 +114,17 @@
 </ul>
 <p>Here is an example of a basic project layout:</p>
 <pre><code>project  
+    ├── 0_get_data.R
+    ├── 1_preprocess_data.R
+    ├── README.txt
     ├── data  
     ├── doc  
     ├── figs  
     ├── output  
     └── src  </code></pre>
-<div id="folder-contents" class="section level3 tabset tabset-fade tabset-pills">
-<h3>1.1.1 Folder contents</h3>
+<p>Code files are stored in the top level of the <code>project</code> directory (e.g. <code>0_get_data.R</code> and <code>1_preprocess_data.R</code>). Also stored in the top level directory is a <code>README.txt</code> file that contains a description of the project and a brief summary of for each file and folder in the project.</p>
+<div id="folder-sub-directories" class="section level3 tabset tabset-fade tabset-pills">
+<h3>1.1.1 Folder sub-directories</h3>
 <div id="project" class="section level4">
 <h4>project</h4>
 <p><code>project</code> is the top-level folder and contains all of the folders and files associated with that project. This folder should be renamed for each unique project in a way that indicates what it is (e.g. <code>discounting_study</code>).</p>
