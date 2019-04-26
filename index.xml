@@ -6,7 +6,7 @@
     <description>Recent content on Krista L. DeStasio</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 17 Apr 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 24 Apr 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
@@ -44,7 +44,7 @@ PUBLICATIONS DeStasio, Krista L., Clithero, John A., and Berkman, Elliot T. (und
     <item>
       <title>R Best Practices</title>
       <link>/post/r_best_practices/</link>
-      <pubDate>Wed, 17 Apr 2019 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 24 Apr 2019 00:00:00 +0000</pubDate>
       
       <guid>/post/r_best_practices/</guid>
       <description>When learning to write code for research projects, it can be overwhelming to figure out how to set-up a project and the novice programmer may not yet have the experience necessary to forsee potential pitfalls of a given, seemingly inconsequential decision. This post provides a discussion of best practices1 for developing code-based projects and for writing R code in a research setting with an eye toward proactively avoiding common pitfalls.</description>
