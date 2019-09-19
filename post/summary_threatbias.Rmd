@@ -1,0 +1,206 @@
+---
+title: 'Clustering Analysis of Dot Probe Data'
+author: "Krista DeStasio"
+date: "2019-09-19"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 3
+    toc_float: no
+  word_document:
+    toc: yes
+    toc_depth: '3'
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
+editor_options: 
+  chunk_output_type: console
+---
+
+This post walks through an exploratory k-means clustering analysis as applied to numerical data from a dot probe task. Steps to preprocess and analyze the data are discussed and the results are presented through visualizations, as well as a discussion of the results. All code used in the analysis and in the production of this blog post is available at [https://github.com/kdestasio/hc_analysis](https://github.com/kdestasio/hc_analysis). For additional resources on clustering, see the references section at the bottom of the post.  
+
+```{r setup, include=FALSE}
+library(here)
+library(knitr)
+library(purrr)
+library(ggplot2)
+library(factoextra)
+knitr::opts_chunk$set(echo = FALSE, eval = TRUE)
+```
+
+# Background information
+
+Analyses were conducted using R (R Core Team, 2018).
+
+```
+platform       x86_64-apple-darwin15.6.0   
+arch           x86_64                      
+os             darwin15.6.0                
+system         x86_64, darwin15.6.0        
+status                                     
+major          3                           
+minor          5.1                         
+year           2018                        
+month          07                          
+day            02                          
+svn rev        74947                       
+language       R                           
+version.string R version 3.5.1 (2018-07-02)
+nickname       Feather Spray        
+```
+## Purpose
+
+The purpose of this analysis is to explore whether meaningful subgroups emerge from performance on an anxiety dot probe (Bar-Haim, Lamy, Pergamin, Bakermans-Kranenburg, & Van Ijzendoorn, 2007; Mathews & Mackintosh, 1998). To conduct this exploratory analysis, we use several clustering algorithms (see Jain, 2010 for an overview of clustering). Clustering algorithms are designed to group data based on their similarity or dissimilarity (e.g. distance in euclidian space). Prior to clustering, dimension reduction is conducted via principal components analysis to decresase overfitting and to make the models more inerpretable (Zha, et al., 2002; Ding & He, 2004). The final solution is selected based on visual inspection of the cluster outcomes, and based on the sum of squared errors for each solution. Outcomes of a spectral clustering analysis (connectivity), a k-means cluster analysis (compactness), and a hierarchical clustering analysis are compared to identify subgroups within the Anxiety Dot Probe measures. These approaches are well suited to numeric data. K-means is a partition based clustering algorithm that groups data points by their euclidian distance from the cluster’s centroid, the mean of that cluster’s objects (Nerurkar et al., 2018). Spectral clustering also uses euclidian distance to group data points, but by representing the data as a similarity graph in which data poionts are nodes and the distances between them are weighted edges (Von Luxburg, 2007). Both k-means and spectral clustering require a priori specification of the number of clusters. Hierarchical clustering, in contrast, creates multiple levels of clusters and subclusters (Cichosz, 2015). As such, hierarchical clustering does not require a priori specification of number of clusters.
+
+This analysis is done with the eventual goal of predicting treatment trajectories in an unrelated sample of Attention Bias Modification Training (ABMT) recipients. In that analysis, we will test whether cluster membership can predict the efficacy of ABMT (toward or away from threat) as measured by a post-ABMT re-application of the anxiety dot-probe.
+
+## The data
+
+The data are from the first dot probe in a larger, multiwave study by Dr. Tracy Dennis-Tiwary and colleagues (see Figure 1 for a visual of the entire study design). Several different performance measures are calculated for the dot probe to measure bias toward and away from threatening stimuli. The variables used in the clustering analysis are listed below.
+
+![Figure 1. Study Design](images/study_design.png)
+
+### Dot probe variables
+
+**Variables included in the analysis**
+
+- `threatbias_erlab`: The average response times (RTs) for neutral probes minus RTs for angry probes on trials with both angry and neutral faces.  
+- `vigilance_erlab`: The average RTs for neutral probes in trials with only neutral images minus RTs for angry probes in trials with both neutral and angry faces.  
+- `disengage_erlab` (removed prior to clustering): The average RTs for neutral probes on trials with both neutral and angry faces minus RTs for neutral probes on trials with only neutral images.  
+- `rt_threat_nt`: The time between a probe appearing on screen and the subsequent button press by a participant.  
+- `variability`: The absolute value of the distance (number of trials between two trials of the same type, e.g. neutral only images) across all trial-level threat bias scores / number of pairs.  
+
+# Pre-processing
+## Outliers and missingness
+Outliers were already removed from the data by our collaborators based on the percentage of trials that were answered correctly. Participants with an accuracy of .80 or greater are included in the dataset. There are no initial missing data for the dot probe measures as the included metrics can be computed for anyone who completed the task. 
+
+## Zero and near zero variance
+All variables were checked for zero or near zero variance and no issues were found.  
+
+## Linear dependencies
+`disengage_erlab` is a linear combination of `threatbias_erlab` and `vigilance_erlab`. `disengage_erlab` was therefore not included in the clustering analysis.
+
+```
+ disengage = threat_bias - vigilance
+```
+
+## Standardization/Scaling
+**Purpose: Allow comparison of data that was collected on different scales.**
+
+Clustering is sensitive to differences in the measurement scales of data (Mohamad, Usman, 2013). Since the means and standard deviations do vary across features, we standardized them by mean centering Using the `scale()` function (see Table 1). Variables are scaled to mean = 0, sd = 1.  
+
+```{r}
+load(here("data_means_bias.Rda"))
+kable(data_means_bias, digits = 2,
+      caption = "Table 1. Comparison of Means for Threat Bias Variables Before and After Scaling")
+```
+
+## Dimensionality Reduction, Principal Components Analysis  
+**Purpose: prevent overfitting of the data and improve interpretability**
+
+Principal Components Analysis (PCA) is a dimensionality reduction technique that can be used as a precursor to k-means clustering (Zha, et al., 2002; Ding & He, 2004). PCA projects high dimensional data onto a lower dimensional sub-space and rotates data to mazimize variance in the new axes. The components are then listed in order of  decreasing variance (e.g. component 1 has the most variation in the data, component 2 is orthogonal to component 1 and has the most remaining variation, and so on). PCA is an unsuprevised technique that can be used when we do not have hypotheses about the distribution of varaince across features.   
+
+![](images/pca_variance_bias.jpg)
+```{r}
+load(here("data_pcasummary_bias.Rda"))
+kable(pca_summary_bias$importance, digits = 2, 
+      caption = 'Table 2. PCA Summary Table, Threat Bias Dataset')
+```
+
+Based on the cumulative proportion of variance accounted for by each principal component, the 3-component solution is selected for use in the clustering analysis as it is the point at which more than 90% of the variance in the data can be acounted for (see Table 2).  
+
+# K-means clustering
+K-means is a centroid based clustering approach that groups data points around a central point to minimize within group distance and maximize between group distance. To help determine the number of clusters to use, k-means is run with 2 through 4 clusters. 
+
+## Scatterplots of clustering by variable
+```{r}
+load(here("data_bias.Rda"))
+load(here("km_data_pca3_bias.Rda"))
+purrr::walk(km_data_pca3_bias, ~plot(data_bias[,], col = .x$cluster))
+```
+
+## Boxplots by variable
+
+![](images/boxplot_bias_2clusters.jpg)
+
+![](images/boxplot_bias_3clusters.jpg)
+
+![](images/boxplot_bias_4clusters.jpg)
+
+
+## Silhouette plots
+
+![](images/silplot_pca3_bias_2clusters.png)
+
+![](images/silplot_pca3_bias_3clusters.png)
+
+![](images/silplot_pca3_bias_4clusters.png)
+
+# Summary
+
+The clustering analysis was performed using the threat bias variables `threatbias_erlab` and `vigilance_erlab`, as well as the response time variable `rt_threat_nt` and the variability variable `variability`. As mentioned in the preprocessing section, `disengage_erlab` does not provide useful information for development of a clustering solution, nor its interpretation as the variable is a linear combination of `threatbias_erlab` and `vigilance_erlab`. Response time is the predominent feature on which data are clustered.  
+
+Based on the scatterplots of each variable, the data **do not exhibit any natural clustering tendencies.** However, we discuss differences between the "best" clustering solutions to illustrate how one might decide between several possible clustering solutions.  
+
+The main difference between clusters within solutions appears to relate to response time and threat bias scores, as evidenced by the boxplots and scatterplots (see above plots). As can be seen in the silhouette plots, cluster 1 is the largest in all of the clustering solutions, reflecting generally faster response times. In the 2 cluster solution, cluster 1 members have a generally faster response time and higher threat bias scores. Cluster 2 of the 2 cluster solution contains observations with generally slower response times and lower threat bias scores. Cluster 1 is most people. In the 3 cluster solution, there is also a small 3rd cluster that consists of slower response times and higher threat bias scores. Both the 2 and 3 cluster solutions are equally “good”. The 4 cluster solution  appears to break out the fourth cluster based on long response times. Any of the solutions are viable options, though the 2 and 3 cluster solutions are likely more easily interpretable and the fewer clusters there are the fewer observations fit poorly within them (see the number of negative silhouette observations in table 3). Overall clustering solution fit measures are presented in table 3 and see table 4 for summary measures of fit by cluster within each clustering solution.  
+
+```{r}
+make_table3 <- function(data) {
+    df <- NULL
+    for (i in seq_along(data)) {
+        total_within_cluster_ss <- data[[i]]$tot.withinss  # total
+        total_between_cluster_ss <- data[[i]]$betweenss  # total between ss
+        clustering_solution <- data[[i]]$nbclust  # total number of clusters
+        average_silhouette_coefficient <- data[[i]]$silinfo$avg.width  # total sil 
+        negative_silhouette <- length(which(data[[i]]$silinfo$widths[, "sil_width"] < 0))  # total neg observations
+        
+        temp <- cbind(clustering_solution, total_within_cluster_ss, total_between_cluster_ss, average_silhouette_coefficient, negative_silhouette)
+        df <- rbind(df, temp)
+    }
+    kable(df, digits = 2, caption = "Table 3. Clustering Solution Summary Statistics: by Clustering Solition")
+}
+
+make_table3(km_data_pca3_bias)
+
+
+make_table4 <- function(data) {
+    df <- NULL
+    for (i in seq_along(data)) {
+        clustering_solution <-  data[[i]]$nbclust # total number of clusters
+        clustering_solution <- rep(clustering_solution, clustering_solution)
+        cluster <- seq_along(1:data[[i]]$nbclust)
+        within_cluster_ss <- data[[i]]$withinss  # per clust
+        observations_per_cluster <- data[[i]]$size  # observations per clust
+        average_silhouette_width <- data[[i]]$silinfo$clus.avg.widths  # per clust
+        
+        temp <- cbind(clustering_solution, cluster, observations_per_cluster, within_cluster_ss, average_silhouette_width)
+        df <- rbind(df, temp)
+    }
+    kable(df, digits = 2, caption = "Table 4. Clustering Solution Summary Statistics: by Cluster, Within Clustering Solition")
+}
+
+make_table4(km_data_pca3_bias)
+```
+
+# References 
+
+Bar-Haim, Y., Lamy, D., Pergamin, L., Bakermans-Kranenburg, M. J., & Van Ijzendoorn, M. H. (2007). Threat-related attentional bias in anxious and nonanxious individuals: a meta-analytic study. Psychological bulletin, 133(1), 1.
+
+Cichosz, P. (2015). Data mining algorithms: explained using R. John Wiley & Sons Incorporated.
+
+Ding, C., & He, X. (2004, July). K-means clustering via principal component analysis. In Proceedings of the twenty-first international conference on Machine learning (p. 29). ACM.
+
+Jain, A. K. (2010). Data clustering: 50 years beyond K-means. Pattern recognition letters, 31(8), 651-666.
+
+Mathews, A., & Mackintosh, B. (1998). A cognitive model of selective processing in anxiety. Cognitive therapy and research, 22(6), 539-560.
+
+Mohamad, I. B., & Usman, D. (2013). Standardization and its effects on K-means clustering algorithm. Research Journal of Applied Sciences, Engineering and Technology, 6(17), 3299-3303.
+
+Nerurkar, P., Shirke, A., Chandane, M., & Bhirud, S. (2018). Empirical analysis of data clustering algorithms. Procedia Computer Science, 125, 770-779.
+
+Von Luxburg, U. (2007). A tutorial on spectral clustering. Statistics and computing, 17(4), 395-416.
+
+Zha, Hongyuan, Xiaofeng He, Chris Ding, Ming Gu, and Horst D Simon. “Spectral Relaxation for K-Means Clustering.” Advances in Neural Information Processing Systems, 2002, 1057–64.
+
+# See also
+This fun clustering application that will let you play with some pokemon data and kmeans clustering: [https://kdestasio.shinyapps.io/fpr_final_project/](https://kdestasio.shinyapps.io/fpr_final_project/)
