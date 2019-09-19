@@ -15,6 +15,11 @@ output:
     toc_depth: '3'
 editor_options: 
   chunk_output_type: console
+tags:
+- r
+- beginner
+- kmeans
+- clustering
 ---
 
 This post walks through an exploratory k-means clustering analysis as applied to numerical data from a dot probe task. Steps to preprocess and analyze the data are discussed and the results are presented through visualizations, as well as a discussion of the results. All code used in the analysis and in the production of this blog post is available at [https://github.com/kdestasio/hc_analysis](https://github.com/kdestasio/hc_analysis). For additional resources on clustering, see the references section at the bottom of the post.  

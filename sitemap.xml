@@ -11,7 +11,22 @@
   </url>
   
   <url>
+    <loc>/tags/beginner/</loc>
+    <lastmod>2019-09-19T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/clustering/</loc>
+    <lastmod>2019-09-19T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/post/summary_threatbias/</loc>
+    <lastmod>2019-09-19T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/kmeans/</loc>
     <lastmod>2019-09-19T00:00:00+00:00</lastmod>
   </url>
   
@@ -26,17 +41,17 @@
   </url>
   
   <url>
-    <loc>/tags/beginner/</loc>
-    <lastmod>2019-04-24T00:00:00+00:00</lastmod>
+    <loc>/tags/r/</loc>
+    <lastmod>2019-09-19T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2019-09-19T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>/tags/data-science-club/</loc>
-    <lastmod>2019-04-24T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/r/</loc>
     <lastmod>2019-04-24T00:00:00+00:00</lastmod>
   </url>
   
@@ -47,11 +62,6 @@
   
   <url>
     <loc>/tags/r-tips/</loc>
-    <lastmod>2019-04-24T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/</loc>
     <lastmod>2019-04-24T00:00:00+00:00</lastmod>
   </url>
   
