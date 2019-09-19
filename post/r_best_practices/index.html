@@ -99,7 +99,7 @@
 						
 
 
-<p>When learning to write code for research projects, it can be overwhelming to figure out how to set-up a project and the novice programmer may not yet have the experience necessary to forsee potential pitfalls of a given, seemingly inconsequential decision. <strong>This post provides a discussion of best practices<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> for developing code-based projects and for writing <code>R</code> code in a research setting with an eye toward proactively avoiding common pitfalls.</strong> While reading, it is worth keeping in mind that what works for a certain project or with different collaborators will likely vary, but a consistent and well thought out approach to designing project structures and writing code provides a strong base from which to develop subsequent projects.</p>
+<p>When learning to write code for research projects, it can be overwhelming to figure out how to set-up a project and the novice programmer may not yet have the experience necessary to forsee potential pitfalls of a given, seemingly inconsequential decision. <strong>This post provides a discussion of best practices<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> for developing code-based projects and for writing <code>R</code> code in a research setting with an eye toward proactively avoiding common pitfalls.</strong> While reading, it is worth keeping in mind that what works for a certain project or with different collaborators will likely vary, but a consistent and well thought out approach to designing project structures and writing code provides a strong base from which to develop subsequent projects.</p>
 <div id="project-organization" class="section level1">
 <h1>1 Project organization</h1>
 <div id="keep-files-in-a-project-folder" class="section level2">
@@ -147,7 +147,8 @@
 </div>
 <div id="src" class="section level4">
 <h4>src</h4>
-<p><code>src</code> is an optional folder for any files you may want to <code>source()</code> in your scripts. This is not code that is run. For example, simple <code>.R</code> files containing functions.</p>
+<p><code>src</code> is an optional folder for any files you may want to <code>source()</code>
+in your scripts. This is not code that is run. For example, simple <code>.R</code> files containing functions.</p>
 </div>
 </div>
 <div id="see-also" class="section level3">
@@ -235,10 +236,7 @@ path_datafile &lt;- here(&#39;data/data_file.csv&#39;)</code></pre>
 <h2>3.3 Name your chunks</h2>
 <p>When using R Markdown, name your chunks of code for easy navigation using the handy, built-in table of contents at the bottom left of your RStudio editor window.</p>
 <p><strong>Example</strong></p>
-<div class="figure">
-<img src="../../images/name_chunks.png" style="width:40.0%" />
-
-</div>
+<p><img src="../../images/name_chunks.png" style="width:40.0%" /></p>
 <div id="see-also-2" class="section level3">
 <h3>See also</h3>
 <ul>
@@ -333,7 +331,7 @@ path_datafile &lt;- here(&#39;data/data_file.csv&#39;)</code></pre>
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>The best practices discussed here are based on personal experience and the resources referenced in the post. They are not hard rules, nor are they immutable. There is a degree of personal preference inherent in the guidelines and my thoughts on these practices will likely continue to evolve with time and experience.<a href="#fnref1">↩</a></p></li>
+<li id="fn1"><p>The best practices discussed here are based on personal experience and the resources referenced in the post. They are not hard rules, nor are they immutable. There is a degree of personal preference inherent in the guidelines and my thoughts on these practices will likely continue to evolve with time and experience.<a href="#fnref1" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
 
