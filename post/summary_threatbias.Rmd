@@ -30,6 +30,7 @@ library(knitr)
 library(purrr)
 library(ggplot2)
 library(factoextra)
+library(kableExtra)
 knitr::opts_chunk$set(echo = FALSE, eval = TRUE)
 ```
 
@@ -63,17 +64,17 @@ This analysis is done with the eventual goal of predicting treatment trajectorie
 
 The data are from the first dot probe in a larger, multiwave study by Dr. Tracy Dennis-Tiwary and colleagues (see Figure 1 for a visual of the entire study design). Several different performance measures are calculated for the dot probe to measure bias toward and away from threatening stimuli. The variables used in the clustering analysis are listed below.
 
-![Figure 1. Study Design](images/study_design.png)
+![Figure 1. Study Design](/images/study_design.png)
 
 ### Dot probe variables
 
 **Variables included in the analysis**
 
-- `threatbias_erlab`: The average response times (RTs) for neutral probes minus RTs for angry probes on trials with both angry and neutral faces.  
-- `vigilance_erlab`: The average RTs for neutral probes in trials with only neutral images minus RTs for angry probes in trials with both neutral and angry faces.  
-- `disengage_erlab` (removed prior to clustering): The average RTs for neutral probes on trials with both neutral and angry faces minus RTs for neutral probes on trials with only neutral images.  
-- `rt_threat_nt`: The time between a probe appearing on screen and the subsequent button press by a participant.  
-- `variability`: The absolute value of the distance (number of trials between two trials of the same type, e.g. neutral only images) across all trial-level threat bias scores / number of pairs.  
+- `Threat Bias` (_threatbias_erlab_): The average response times (RTs) for neutral probes minus RTs for angry probes on trials with both angry and neutral faces.  
+- `Vigilance` (_vigilance_erlab_): The average RTs for neutral probes in trials with only neutral images minus RTs for angry probes in trials with both neutral and angry faces.  
+- `Disengage` (_diesengage_erlab_; removed prior to clustering): The average RTs for neutral probes on trials with both neutral and angry faces minus RTs for neutral probes on trials with only neutral images.  
+- `Threat RT` (_rt_threat_nt_): The time between a probe appearing on screen and the subsequent button press by a participant.  
+- `Variability` (_variability_): The absolute value of the distance (number of trials between two trials of the same type, e.g. neutral only images) across all trial-level threat bias scores / number of pairs.  
 
 # Pre-processing
 ## Outliers and missingness
@@ -94,25 +95,33 @@ All variables were checked for zero or near zero variance and no issues were fou
 
 Clustering is sensitive to differences in the measurement scales of data (Mohamad, Usman, 2013). Since the means and standard deviations do vary across features, we standardized them by mean centering Using the `scale()` function (see Table 1). Variables are scaled to mean = 0, sd = 1.  
 
+<br></br>
 ```{r}
 load(here("data_means_bias.Rda"))
 kable(data_means_bias, digits = 2,
-      caption = "Table 1. Comparison of Means for Threat Bias Variables Before and After Scaling")
+      caption = "Comparison of Means for Threat Bias Variables Before and After Scaling",
+      col.names = c("Threat Bias", "Vigilance", "Threat RT", "Variability")) %>% 
+      kable_styling(full_width = F)
 ```
+<br></br>
 
 ## Dimensionality Reduction, Principal Components Analysis  
 **Purpose: prevent overfitting of the data and improve interpretability**
 
 Principal Components Analysis (PCA) is a dimensionality reduction technique that can be used as a precursor to k-means clustering (Zha, et al., 2002; Ding & He, 2004). PCA projects high dimensional data onto a lower dimensional sub-space and rotates data to mazimize variance in the new axes. The components are then listed in order of  decreasing variance (e.g. component 1 has the most variation in the data, component 2 is orthogonal to component 1 and has the most remaining variation, and so on). PCA is an unsuprevised technique that can be used when we do not have hypotheses about the distribution of varaince across features.   
 
-![](images/pca_variance_bias.jpg)
+![](/images/pca_variance_bias.jpg)
+
+Based on the cumulative proportion of variance accounted for by each principal component, the 3-component solution is selected for use in the clustering analysis as it is the point at which more than 90% of the variance in the data can be acounted for (see Table 2).
+
+<br></br>
 ```{r}
 load(here("data_pcasummary_bias.Rda"))
 kable(pca_summary_bias$importance, digits = 2, 
-      caption = 'Table 2. PCA Summary Table, Threat Bias Dataset')
+      caption = 'PCA Summary Table, Threat Bias Dataset') %>% 
+  kable_styling(full_width = F)
 ```
-
-Based on the cumulative proportion of variance accounted for by each principal component, the 3-component solution is selected for use in the clustering analysis as it is the point at which more than 90% of the variance in the data can be acounted for (see Table 2).  
+<br></br>
 
 # K-means clustering
 K-means is a centroid based clustering approach that groups data points around a central point to minimize within group distance and maximize between group distance. To help determine the number of clusters to use, k-means is run with 2 through 4 clusters. 
@@ -124,28 +133,38 @@ load(here("km_data_pca3_bias.Rda"))
 purrr::walk(km_data_pca3_bias, ~plot(data_bias[,], col = .x$cluster))
 ```
 
-## Boxplots by variable
-
-![](images/boxplot_bias_2clusters.jpg)
-
-![](images/boxplot_bias_3clusters.jpg)
-
-![](images/boxplot_bias_4clusters.jpg)
-
-
 ## Silhouette plots
 
-![](images/silplot_pca3_bias_2clusters.png)
+A silhouette plot shows cluster distance, a combination of within cluster compactness and of between cluster separation. A silhouette coefficient closer to 1 means that the data are well classified, whereas a coefficient near 0 means observations are between clusters. A negative silhouette coefficient means observations are likely misclassified and that the data do not group well with any of the identified clusters. The width of each cluster in this plot represents the number of observations per cluster. Generally, we want clusters to be of roughly the same size, which we can gain information about by examining the silhouette plot.  
 
-![](images/silplot_pca3_bias_3clusters.png)
+In each of the silhouette plots below, we can see that cluster 1 is has the greatest number of observations (based on its width) and that there are no observations in cluster one that dip down into the negative. This indicates that the observations in cluster one tend to group well together.  
 
-![](images/silplot_pca3_bias_4clusters.png)
+![](/images/silplot_pca3_bias_2clusters.png)
+
+
+Looking at cluster 2, we see that there are observations with a negative silhouette. This suggests that, while those observations are most similar to other observations in the cluster 2 as compared to cluster 1, they are different enough from the other cluster 2 observations that they don't really belong there. This could happen if, for example, there was a third cluster that we had not identified that could neatly absorb the misclassified observations. However, based on examination of the scatterplots and the sillhouette plots with 3 and 4 clusters, it seems that in our case this may be due to a lack of underlying structure in the data that lends itself naturally to clusters. 
+
+
+![](/images/silplot_pca3_bias_3clusters.png)
+
+![](/images/silplot_pca3_bias_4clusters.png)
+
+## Boxplots by variable
+
+We can break the clusters down by variable as well to see how scores on each variable effect cluster membership. Looking at the median values and the spread of the data, it appears that reaction time probably contributes most strongly to cluster formation. However, the relationships between the variables are also involved in identifying the clusters, so the inferences we can draw from these plots are minimal. They can, however, be helpful in trying to make sense of clusters once they are formed.  
+
+![](/images/boxplot_bias_2clusters.jpg)
+
+![](/images/boxplot_bias_3clusters.jpg)
+
+![](/images/boxplot_bias_4clusters.jpg)
+
 
 # Summary
 
-The clustering analysis was performed using the threat bias variables `threatbias_erlab` and `vigilance_erlab`, as well as the response time variable `rt_threat_nt` and the variability variable `variability`. As mentioned in the preprocessing section, `disengage_erlab` does not provide useful information for development of a clustering solution, nor its interpretation as the variable is a linear combination of `threatbias_erlab` and `vigilance_erlab`. Response time is the predominent feature on which data are clustered.  
+The clustering analysis was performed using the threat bias variables `Threat Bias` and `Vigilance`, as well as the response time variable `Threat RT` and the variability variable `Variability`. As mentioned in the preprocessing section, `Disengagem` does not provide useful information for development of a clustering solution, nor its interpretation as the variable is a linear combination of `Threat Bias` and `Vigilance`. Response time is the predominent feature on which data are clustered.  
 
-Based on the scatterplots of each variable, the data **do not exhibit any natural clustering tendencies.** However, we discuss differences between the "best" clustering solutions to illustrate how one might decide between several possible clustering solutions.  
+Based on the scatterplots of each variable, the data do not exhibit any natural clustering tendencies. However, we discuss differences between the "best" clustering solutions to illustrate how one might decide between several possible clustering solutions.  
 
 The main difference between clusters within solutions appears to relate to response time and threat bias scores, as evidenced by the boxplots and scatterplots (see above plots). As can be seen in the silhouette plots, cluster 1 is the largest in all of the clustering solutions, reflecting generally faster response times. In the 2 cluster solution, cluster 1 members have a generally faster response time and higher threat bias scores. Cluster 2 of the 2 cluster solution contains observations with generally slower response times and lower threat bias scores. Cluster 1 is most people. In the 3 cluster solution, there is also a small 3rd cluster that consists of slower response times and higher threat bias scores. Both the 2 and 3 cluster solutions are equally “good”. The 4 cluster solution  appears to break out the fourth cluster based on long response times. Any of the solutions are viable options, though the 2 and 3 cluster solutions are likely more easily interpretable and the fewer clusters there are the fewer observations fit poorly within them (see the number of negative silhouette observations in table 3). Overall clustering solution fit measures are presented in table 3 and see table 4 for summary measures of fit by cluster within each clustering solution.  
 
@@ -162,7 +181,10 @@ make_table3 <- function(data) {
         temp <- cbind(clustering_solution, total_within_cluster_ss, total_between_cluster_ss, average_silhouette_coefficient, negative_silhouette)
         df <- rbind(df, temp)
     }
-    kable(df, digits = 2, caption = "Table 3. Clustering Solution Summary Statistics: by Clustering Solition")
+    kable(df, digits = 2, 
+          caption = "Clustering Solution Summary Statistics: by Clustering Solition",
+          col.names = c("K", "Within SS", "Between SS", "Avg. Silhouette Width", "Negative Silhouette")) %>% 
+      kable_styling(full_width = F)
 }
 
 make_table3(km_data_pca3_bias)
@@ -181,11 +203,19 @@ make_table4 <- function(data) {
         temp <- cbind(clustering_solution, cluster, observations_per_cluster, within_cluster_ss, average_silhouette_width)
         df <- rbind(df, temp)
     }
-    kable(df, digits = 2, caption = "Table 4. Clustering Solution Summary Statistics: by Cluster, Within Clustering Solition")
+    kable(df, digits = 2, 
+          caption = "Clustering Solution Summary Statistics: by Cluster, Within Clustering Solition",
+          col.names = c("K", "Cluster", "Observations", "Within SS", "Avg. Silhouette Width")) %>% 
+      kable_styling(full_width = F)
 }
+```
 
+<br></br>
+
+```{r}
 make_table4(km_data_pca3_bias)
 ```
+<br></br>
 
 # References 
 

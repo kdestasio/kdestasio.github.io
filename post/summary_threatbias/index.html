@@ -97,6 +97,7 @@
 					</header>
 					<div class="entry-content">
 						
+<script src="../../rmarkdown-libs/kePrint/kePrint.js"></script>
 
 
 <p>This post walks through an exploratory k-means clustering analysis as applied to numerical data from a dot probe task. Steps to preprocess and analyze the data are discussed and the results are presented through visualizations, as well as a discussion of the results. All code used in the analysis and in the production of this blog post is available at <a href="https://github.com/kdestasio/hc_analysis">https://github.com/kdestasio/hc_analysis</a>. For additional resources on clustering, see the references section at the bottom of the post.</p>
@@ -126,22 +127,22 @@ nickname       Feather Spray        </code></pre>
 <h2>The data</h2>
 <p>The data are from the first dot probe in a larger, multiwave study by Dr. Tracy Dennis-Tiwary and colleagues (see Figure 1 for a visual of the entire study design). Several different performance measures are calculated for the dot probe to measure bias toward and away from threatening stimuli. The variables used in the clustering analysis are listed below.</p>
 <div class="figure">
-<img src="images/study_design.png" alt="Figure 1. Study Design" />
+<img src="../../images/study_design.png" alt="Figure 1. Study Design" />
 <p class="caption">Figure 1. Study Design</p>
 </div>
 <div id="dot-probe-variables" class="section level3">
 <h3>Dot probe variables</h3>
 <p><strong>Variables included in the analysis</strong></p>
 <ul>
-<li><code>threatbias_erlab</code>: The average response times (RTs) for neutral probes minus RTs for angry probes on trials with both angry and neutral faces.<br />
+<li><code>Threat Bias</code> (<em>threatbias_erlab</em>): The average response times (RTs) for neutral probes minus RTs for angry probes on trials with both angry and neutral faces.<br />
 </li>
-<li><code>vigilance_erlab</code>: The average RTs for neutral probes in trials with only neutral images minus RTs for angry probes in trials with both neutral and angry faces.<br />
+<li><code>Vigilance</code> (<em>vigilance_erlab</em>): The average RTs for neutral probes in trials with only neutral images minus RTs for angry probes in trials with both neutral and angry faces.<br />
 </li>
-<li><code>disengage_erlab</code> (removed prior to clustering): The average RTs for neutral probes on trials with both neutral and angry faces minus RTs for neutral probes on trials with only neutral images.<br />
+<li><code>Disengage</code> (<em>diesengage_erlab</em>; removed prior to clustering): The average RTs for neutral probes on trials with both neutral and angry faces minus RTs for neutral probes on trials with only neutral images.<br />
 </li>
-<li><code>rt_threat_nt</code>: The time between a probe appearing on screen and the subsequent button press by a participant.<br />
+<li><code>Threat RT</code> (<em>rt_threat_nt</em>): The time between a probe appearing on screen and the subsequent button press by a participant.<br />
 </li>
-<li><code>variability</code>: The absolute value of the distance (number of trials between two trials of the same type, e.g. neutral only images) across all trial-level threat bias scores / number of pairs.</li>
+<li><code>Variability</code> (<em>variability</em>): The absolute value of the distance (number of trials between two trials of the same type, e.g. neutral only images) across all trial-level threat bias scores / number of pairs.</li>
 </ul>
 </div>
 </div>
@@ -165,90 +166,186 @@ nickname       Feather Spray        </code></pre>
 <h2>Standardization/Scaling</h2>
 <p><strong>Purpose: Allow comparison of data that was collected on different scales.</strong></p>
 <p>Clustering is sensitive to differences in the measurement scales of data (Mohamad, Usman, 2013). Since the means and standard deviations do vary across features, we standardized them by mean centering Using the <code>scale()</code> function (see Table 1). Variables are scaled to mean = 0, sd = 1.</p>
-<table>
-<caption><span id="tab:unnamed-chunk-1">Table 1: </span>Table 1. Comparison of Means for Threat Bias Variables Before and After Scaling</caption>
+<br></br>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-1">Table 1: </span>Comparison of Means for Threat Bias Variables Before and After Scaling
+</caption>
 <thead>
-<tr class="header">
-<th></th>
-<th align="right">threatbias_erlab</th>
-<th align="right">vigilance_erlab</th>
-<th align="right">rt_threat_nt</th>
-<th align="right">variability</th>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Threat Bias
+</th>
+<th style="text-align:right;">
+Vigilance
+</th>
+<th style="text-align:right;">
+Threat RT
+</th>
+<th style="text-align:right;">
+Variability
+</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td>raw_means_bias</td>
-<td align="right">2.61</td>
-<td align="right">1.95</td>
-<td align="right">519.65</td>
-<td align="right">1.95</td>
+<tr>
+<td style="text-align:left;">
+Raw Mean
+</td>
+<td style="text-align:right;">
+2.61
+</td>
+<td style="text-align:right;">
+1.95
+</td>
+<td style="text-align:right;">
+519.65
+</td>
+<td style="text-align:right;">
+1.95
+</td>
 </tr>
-<tr class="even">
-<td>raw_sds_bias</td>
-<td align="right">24.75</td>
-<td align="right">24.05</td>
-<td align="right">81.39</td>
-<td align="right">0.94</td>
+<tr>
+<td style="text-align:left;">
+Raw SD
+</td>
+<td style="text-align:right;">
+24.75
+</td>
+<td style="text-align:right;">
+24.05
+</td>
+<td style="text-align:right;">
+81.39
+</td>
+<td style="text-align:right;">
+0.94
+</td>
 </tr>
-<tr class="odd">
-<td>scaled_means_bias</td>
-<td align="right">0.00</td>
-<td align="right">0.00</td>
-<td align="right">0.00</td>
-<td align="right">0.00</td>
+<tr>
+<td style="text-align:left;">
+Scaled Mean
+</td>
+<td style="text-align:right;">
+0.00
+</td>
+<td style="text-align:right;">
+0.00
+</td>
+<td style="text-align:right;">
+0.00
+</td>
+<td style="text-align:right;">
+0.00
+</td>
 </tr>
-<tr class="even">
-<td>scaled_sds_bias</td>
-<td align="right">1.00</td>
-<td align="right">1.00</td>
-<td align="right">1.00</td>
-<td align="right">1.00</td>
+<tr>
+<td style="text-align:left;">
+Scaled SD
+</td>
+<td style="text-align:right;">
+1.00
+</td>
+<td style="text-align:right;">
+1.00
+</td>
+<td style="text-align:right;">
+1.00
+</td>
+<td style="text-align:right;">
+1.00
+</td>
 </tr>
 </tbody>
 </table>
+<p><br></br></p>
 </div>
 <div id="dimensionality-reduction-principal-components-analysis" class="section level2">
 <h2>Dimensionality Reduction, Principal Components Analysis</h2>
 <p><strong>Purpose: prevent overfitting of the data and improve interpretability</strong></p>
 <p>Principal Components Analysis (PCA) is a dimensionality reduction technique that can be used as a precursor to k-means clustering (Zha, et al., 2002; Ding &amp; He, 2004). PCA projects high dimensional data onto a lower dimensional sub-space and rotates data to mazimize variance in the new axes. The components are then listed in order of decreasing variance (e.g. component 1 has the most variation in the data, component 2 is orthogonal to component 1 and has the most remaining variation, and so on). PCA is an unsuprevised technique that can be used when we do not have hypotheses about the distribution of varaince across features.</p>
-<p><img src="images/pca_variance_bias.jpg" /></p>
-<table>
-<caption><span id="tab:unnamed-chunk-2">Table 2: </span>Table 2. PCA Summary Table, Threat Bias Dataset</caption>
+<p><img src="../../images/pca_variance_bias.jpg" /></p>
+<p>Based on the cumulative proportion of variance accounted for by each principal component, the 3-component solution is selected for use in the clustering analysis as it is the point at which more than 90% of the variance in the data can be acounted for (see Table 2).</p>
+<br></br>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-2">Table 2: </span>PCA Summary Table, Threat Bias Dataset
+</caption>
 <thead>
-<tr class="header">
-<th></th>
-<th align="right">PC1</th>
-<th align="right">PC2</th>
-<th align="right">PC3</th>
-<th align="right">PC4</th>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+PC1
+</th>
+<th style="text-align:right;">
+PC2
+</th>
+<th style="text-align:right;">
+PC3
+</th>
+<th style="text-align:right;">
+PC4
+</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td>Standard deviation</td>
-<td align="right">1.32</td>
-<td align="right">1.26</td>
-<td align="right">0.63</td>
-<td align="right">0.53</td>
+<tr>
+<td style="text-align:left;">
+Standard deviation
+</td>
+<td style="text-align:right;">
+1.32
+</td>
+<td style="text-align:right;">
+1.26
+</td>
+<td style="text-align:right;">
+0.63
+</td>
+<td style="text-align:right;">
+0.53
+</td>
 </tr>
-<tr class="even">
-<td>Proportion of Variance</td>
-<td align="right">0.43</td>
-<td align="right">0.40</td>
-<td align="right">0.10</td>
-<td align="right">0.07</td>
+<tr>
+<td style="text-align:left;">
+Proportion of Variance
+</td>
+<td style="text-align:right;">
+0.43
+</td>
+<td style="text-align:right;">
+0.40
+</td>
+<td style="text-align:right;">
+0.10
+</td>
+<td style="text-align:right;">
+0.07
+</td>
 </tr>
-<tr class="odd">
-<td>Cumulative Proportion</td>
-<td align="right">0.43</td>
-<td align="right">0.83</td>
-<td align="right">0.93</td>
-<td align="right">1.00</td>
+<tr>
+<td style="text-align:left;">
+Cumulative Proportion
+</td>
+<td style="text-align:right;">
+0.43
+</td>
+<td style="text-align:right;">
+0.83
+</td>
+<td style="text-align:right;">
+0.93
+</td>
+<td style="text-align:right;">
+1.00
+</td>
 </tr>
 </tbody>
 </table>
-<p>Based on the cumulative proportion of variance accounted for by each principal component, the 3-component solution is selected for use in the clustering analysis as it is the point at which more than 90% of the variance in the data can be acounted for (see Table 2).</p>
+<p><br></br></p>
 </div>
 </div>
 <div id="k-means-clustering" class="section level1">
@@ -258,136 +355,286 @@ nickname       Feather Spray        </code></pre>
 <h2>Scatterplots of clustering by variable</h2>
 <p><img src="../../post/summary_threatbias_files/figure-html/unnamed-chunk-3-1.png" width="672" /><img src="../../post/summary_threatbias_files/figure-html/unnamed-chunk-3-2.png" width="672" /><img src="../../post/summary_threatbias_files/figure-html/unnamed-chunk-3-3.png" width="672" /></p>
 </div>
-<div id="boxplots-by-variable" class="section level2">
-<h2>Boxplots by variable</h2>
-<p><img src="images/boxplot_bias_2clusters.jpg" /></p>
-<p><img src="images/boxplot_bias_3clusters.jpg" /></p>
-<p><img src="images/boxplot_bias_4clusters.jpg" /></p>
-</div>
 <div id="silhouette-plots" class="section level2">
 <h2>Silhouette plots</h2>
-<p><img src="images/silplot_pca3_bias_2clusters.png" /></p>
-<p><img src="images/silplot_pca3_bias_3clusters.png" /></p>
-<p><img src="images/silplot_pca3_bias_4clusters.png" /></p>
+<p>A silhouette plot shows cluster distance, a combination of within cluster compactness and of between cluster separation. A silhouette coefficient closer to 1 means that the data are well classified, whereas a coefficient near 0 means observations are between clusters. A negative silhouette coefficient means observations are likely misclassified and that the data do not group well with any of the identified clusters. The width of each cluster in this plot represents the number of observations per cluster. Generally, we want clusters to be of roughly the same size, which we can gain information about by examining the silhouette plot.</p>
+<p>In each of the silhouette plots below, we can see that cluster 1 is has the greatest number of observations (based on its width) and that there are no observations in cluster one that dip down into the negative. This indicates that the observations in cluster one tend to group well together.</p>
+<p><img src="../../images/silplot_pca3_bias_2clusters.png" /></p>
+<p>Looking at cluster 2, we see that there are observations with a negative silhouette. This suggests that, while those observations are most similar to other observations in the cluster 2 as compared to cluster 1, they are different enough from the other cluster 2 observations that they don’t really belong there. This could happen if, for example, there was a third cluster that we had not identified that could neatly absorb the misclassified observations. However, based on examination of the scatterplots and the sillhouette plots with 3 and 4 clusters, it seems that in our case this may be due to a lack of underlying structure in the data that lends itself naturally to clusters.</p>
+<p><img src="../../images/silplot_pca3_bias_3clusters.png" /></p>
+<p><img src="../../images/silplot_pca3_bias_4clusters.png" /></p>
+</div>
+<div id="boxplots-by-variable" class="section level2">
+<h2>Boxplots by variable</h2>
+<p>We can break the clusters down by variable as well to see how scores on each variable effect cluster membership. Looking at the median values and the spread of the data, it appears that reaction time probably contributes most strongly to cluster formation. However, the relationships between the variables are also involved in identifying the clusters, so the inferences we can draw from these plots are minimal. They can, however, be helpful in trying to make sense of clusters once they are formed.</p>
+<p><img src="../../images/boxplot_bias_2clusters.jpg" /></p>
+<p><img src="../../images/boxplot_bias_3clusters.jpg" /></p>
+<p><img src="../../images/boxplot_bias_4clusters.jpg" /></p>
 </div>
 </div>
 <div id="summary" class="section level1">
 <h1>Summary</h1>
-<p>The clustering analysis was performed using the threat bias variables <code>threatbias_erlab</code> and <code>vigilance_erlab</code>, as well as the response time variable <code>rt_threat_nt</code> and the variability variable <code>variability</code>. As mentioned in the preprocessing section, <code>disengage_erlab</code> does not provide useful information for development of a clustering solution, nor its interpretation as the variable is a linear combination of <code>threatbias_erlab</code> and <code>vigilance_erlab</code>. Response time is the predominent feature on which data are clustered.</p>
-<p>Based on the scatterplots of each variable, the data <strong>do not exhibit any natural clustering tendencies.</strong> However, we discuss differences between the “best” clustering solutions to illustrate how one might decide between several possible clustering solutions.</p>
+<p>The clustering analysis was performed using the threat bias variables <code>Threat Bias</code> and <code>Vigilance</code>, as well as the response time variable <code>Threat RT</code> and the variability variable <code>Variability</code>. As mentioned in the preprocessing section, <code>Disengagem</code> does not provide useful information for development of a clustering solution, nor its interpretation as the variable is a linear combination of <code>Threat Bias</code> and <code>Vigilance</code>. Response time is the predominent feature on which data are clustered.</p>
+<p>Based on the scatterplots of each variable, the data do not exhibit any natural clustering tendencies. However, we discuss differences between the “best” clustering solutions to illustrate how one might decide between several possible clustering solutions.</p>
 <p>The main difference between clusters within solutions appears to relate to response time and threat bias scores, as evidenced by the boxplots and scatterplots (see above plots). As can be seen in the silhouette plots, cluster 1 is the largest in all of the clustering solutions, reflecting generally faster response times. In the 2 cluster solution, cluster 1 members have a generally faster response time and higher threat bias scores. Cluster 2 of the 2 cluster solution contains observations with generally slower response times and lower threat bias scores. Cluster 1 is most people. In the 3 cluster solution, there is also a small 3rd cluster that consists of slower response times and higher threat bias scores. Both the 2 and 3 cluster solutions are equally “good”. The 4 cluster solution appears to break out the fourth cluster based on long response times. Any of the solutions are viable options, though the 2 and 3 cluster solutions are likely more easily interpretable and the fewer clusters there are the fewer observations fit poorly within them (see the number of negative silhouette observations in table 3). Overall clustering solution fit measures are presented in table 3 and see table 4 for summary measures of fit by cluster within each clustering solution.</p>
-<table>
-<caption><span id="tab:unnamed-chunk-4">Table 3: </span>Table 3. Clustering Solution Summary Statistics: by Clustering Solition</caption>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-4">Table 3: </span>Clustering Solution Summary Statistics: by Clustering Solition
+</caption>
 <thead>
-<tr class="header">
-<th align="right">clustering_solution</th>
-<th align="right">total_within_cluster_ss</th>
-<th align="right">total_between_cluster_ss</th>
-<th align="right">average_silhouette_coefficient</th>
-<th align="right">negative_silhouette</th>
+<tr>
+<th style="text-align:right;">
+K
+</th>
+<th style="text-align:right;">
+Within SS
+</th>
+<th style="text-align:right;">
+Between SS
+</th>
+<th style="text-align:right;">
+Avg. Silhouette Width
+</th>
+<th style="text-align:right;">
+Negative Silhouette
+</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="right">2</td>
-<td align="right">2229.00</td>
-<td align="right">910.31</td>
-<td align="right">0.39</td>
-<td align="right">28</td>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+2229.00
+</td>
+<td style="text-align:right;">
+910.31
+</td>
+<td style="text-align:right;">
+0.39
+</td>
+<td style="text-align:right;">
+28
+</td>
 </tr>
-<tr class="even">
-<td align="right">3</td>
-<td align="right">1610.11</td>
-<td align="right">1529.20</td>
-<td align="right">0.36</td>
-<td align="right">43</td>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+1610.11
+</td>
+<td style="text-align:right;">
+1529.20
+</td>
+<td style="text-align:right;">
+0.36
+</td>
+<td style="text-align:right;">
+43
+</td>
 </tr>
-<tr class="odd">
-<td align="right">4</td>
-<td align="right">1347.36</td>
-<td align="right">1791.96</td>
-<td align="right">0.31</td>
-<td align="right">66</td>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+1347.36
+</td>
+<td style="text-align:right;">
+1791.96
+</td>
+<td style="text-align:right;">
+0.31
+</td>
+<td style="text-align:right;">
+66
+</td>
 </tr>
 </tbody>
 </table>
-<table>
-<caption><span id="tab:unnamed-chunk-4">Table 3: </span>Table 4. Clustering Solution Summary Statistics: by Cluster, Within Clustering Solition</caption>
+<p><br></br></p>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-5">Table 4: </span>Clustering Solution Summary Statistics: by Cluster, Within Clustering Solition
+</caption>
 <thead>
-<tr class="header">
-<th align="right">clustering_solution</th>
-<th align="right">cluster</th>
-<th align="right">observations_per_cluster</th>
-<th align="right">within_cluster_ss</th>
-<th align="right">average_silhouette_width</th>
+<tr>
+<th style="text-align:right;">
+K
+</th>
+<th style="text-align:right;">
+Cluster
+</th>
+<th style="text-align:right;">
+Observations
+</th>
+<th style="text-align:right;">
+Within SS
+</th>
+<th style="text-align:right;">
+Avg. Silhouette Width
+</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="right">2</td>
-<td align="right">1</td>
-<td align="right">651</td>
-<td align="right">1384.47</td>
-<td align="right">0.45</td>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+651
+</td>
+<td style="text-align:right;">
+1384.47
+</td>
+<td style="text-align:right;">
+0.45
+</td>
 </tr>
-<tr class="even">
-<td align="right">2</td>
-<td align="right">2</td>
-<td align="right">193</td>
-<td align="right">844.53</td>
-<td align="right">0.18</td>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+193
+</td>
+<td style="text-align:right;">
+844.53
+</td>
+<td style="text-align:right;">
+0.18
+</td>
 </tr>
-<tr class="odd">
-<td align="right">3</td>
-<td align="right">1</td>
-<td align="right">546</td>
-<td align="right">635.01</td>
-<td align="right">0.45</td>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+546
+</td>
+<td style="text-align:right;">
+635.01
+</td>
+<td style="text-align:right;">
+0.45
+</td>
 </tr>
-<tr class="even">
-<td align="right">3</td>
-<td align="right">2</td>
-<td align="right">205</td>
-<td align="right">454.64</td>
-<td align="right">0.25</td>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+205
+</td>
+<td style="text-align:right;">
+454.64
+</td>
+<td style="text-align:right;">
+0.25
+</td>
 </tr>
-<tr class="odd">
-<td align="right">3</td>
-<td align="right">3</td>
-<td align="right">93</td>
-<td align="right">520.46</td>
-<td align="right">0.13</td>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+93
+</td>
+<td style="text-align:right;">
+520.46
+</td>
+<td style="text-align:right;">
+0.13
+</td>
 </tr>
-<tr class="even">
-<td align="right">4</td>
-<td align="right">1</td>
-<td align="right">446</td>
-<td align="right">381.52</td>
-<td align="right">0.41</td>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+446
+</td>
+<td style="text-align:right;">
+381.52
+</td>
+<td style="text-align:right;">
+0.41
+</td>
 </tr>
-<tr class="odd">
-<td align="right">4</td>
-<td align="right">2</td>
-<td align="right">36</td>
-<td align="right">221.68</td>
-<td align="right">0.20</td>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+36
+</td>
+<td style="text-align:right;">
+221.68
+</td>
+<td style="text-align:right;">
+0.20
+</td>
 </tr>
-<tr class="even">
-<td align="right">4</td>
-<td align="right">3</td>
-<td align="right">192</td>
-<td align="right">438.25</td>
-<td align="right">0.21</td>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+192
+</td>
+<td style="text-align:right;">
+438.25
+</td>
+<td style="text-align:right;">
+0.21
+</td>
 </tr>
-<tr class="odd">
-<td align="right">4</td>
-<td align="right">4</td>
-<td align="right">170</td>
-<td align="right">305.90</td>
-<td align="right">0.19</td>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+170
+</td>
+<td style="text-align:right;">
+305.90
+</td>
+<td style="text-align:right;">
+0.19
+</td>
 </tr>
 </tbody>
 </table>
+<p><br></br></p>
 </div>
 <div id="references" class="section level1">
 <h1>References</h1>
