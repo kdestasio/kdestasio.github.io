@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Krista L. DeStasio</title>
@@ -6,11 +6,7 @@
     <description>Recent content on Krista L. DeStasio</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 19 Sep 2019 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Thu, 19 Sep 2019 00:00:00 +0000</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>About</title>
       <link>/about/</link>
@@ -27,16 +23,16 @@ I earned an M.S. in Psychology from the University of Oregon where I was a Natio
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/resume/</guid>
-      <description>Krista L. DeStasio, M.S. E-mail: kdestasio@gmail.com
+      <description>Krista L. DeStasio, M.S.  E-mail: kdestasio@gmail.com
 GitHub: https://github.com/kdestasio
 Linkedin: https://www.linkedin.com/in/kdestasio/
-SKILLS Proficiency: R, R Shiny, Git/GitHub, MacOS, Microsoft Word, PowerPoint, Statistics
+ SKILLS  Proficiency: R, R Shiny, Git/GitHub, MacOS, Microsoft Word, PowerPoint, Statistics
 Familiarity: Python, MATLAB, HTML/CSS, JSON, Linux CentOS &amp;amp; RHEL, Excel
 Exposure: C#, SQL, Oracle, Singularity, Docker, SLURM
-RELEVANT EXPERIENCE GRADUATE LEVEL RESEARCHER
+ RELEVANT EXPERIENCE  GRADUATE STUDENT RESEARCHER
 Social and Affective Neuroscience Lab, University of Oregon
 2016 – 2019
- Developed computer tasks in PsychoPy to present visual stimuli and collect participant responses https://github.com/kdestasio/child_task and adapted extant MATLAB tasks for use in new studies based on user feedback.</description>
+ Developed and maintained an open-source quality checking and preprocessing pipeline for neuroimaging data and JSON metadata files using Python.</description>
     </item>
     
     <item>
